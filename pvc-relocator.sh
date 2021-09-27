@@ -5,16 +5,31 @@
 
 # Approach taken from https://stackoverflow.com/a/66078690/920350
 
-# Set these to what you want
-SRCNS= # e.g. default
-DESTNS= # e.g. media
-PVC= # e.g. plex-config
+if [ "$#" -ne 3 ]; then
+    echo "ERROR: invalid arguments"
+    echo ""
+    echo "Usage: $0 SRCNS DESTNS PVC"
+    echo "       SRCNS: namespace where PVC currently exists"
+    echo "       DESTNS: namespace where PVC shall exist"
+    echo "       PVC: persistentVolumeClaim name"
+    exit 1
+fi
+
+SRCNS="$1" # e.g. default
+DESTNS="$2" # e.g. media
+PVC="$3" # e.g. plex-config
 
 #####################################################
 PV=$(kubectl -n "$SRCNS" get pvc "$PVC" -o custom-columns=PV:.spec.volumeName --no-headers)
 
 if [ "$PV" == "" ]; then
     echo "ERROR: No PV found for PVC \"$PVC\" in namespace \"$SRCNS\". Exiting."
+    exit 1
+fi
+
+kubectl get ns "$DESTNS" &> /dev/null
+if [ "$?" -ne 0 ]; then
+    echo "ERROR: Destination namespace \"$DESTNS\" not found. Exiting."
     exit 1
 fi
 
