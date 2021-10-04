@@ -11,13 +11,25 @@ Move Kubernetes Persistent Volume Claims (PVCs) from one Namespace to another
 
 ## Usage
 
-Edit the script and set the `SRCNS`, `DESTNS` and `PVC` variables how you want.
-
-Then just `./pvc-relocator.sh`.
-
-Output should look similar to this:
+Run the script with no arguments to confirm usage.
 
 ```
+$ ./pvc-relocator.sh
+ERROR: invalid arguments
+
+Usage: ./pvc-relocator.sh SRCNS DESTNS PVC
+       SRCNS: namespace where PVC currently exists
+       DESTNS: namespace where PVC shall exist
+       PVC: persistentVolumeClaim name
+```
+
+
+Then run the script with desired arguments, for example:
+
+
+```
+$ ./pvc-relocator.sh default media tautulli
+
 Plan Summary
 
 PVC to move: "tautulli"
